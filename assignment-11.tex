@@ -1,4 +1,4 @@
-% Created 2015-03-23 Mon 22:33
+% Created 2015-03-26 Thu 00:34
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -156,6 +156,162 @@ set-theoretical manipulations.
     (A_1 \setminus B_1) \cup (A_1 \setminus B_2)
     \cup (A_2 \setminus B_1) \cup (A_2 \setminus B_2) &\iff
     &\textrm{Required identity}
+  \end{aligned}
+\end{equation*}
+\subsection{Problem 4}
+\label{sec-1-4}
+Given $\forall n \in \mathbb{N}: A_n = \{x \in \mathbb{R} | 4 \leq x \leq
+   2n + 2 \}$ and $\forall n \in \mathbb{N}: B_n = A_{n+1} \setminus A_n$.
+\emph{For the purpose of this exercise} $\mathbb{N}$ \emph{contains zero.}
+\begin{enumerate}
+\item Calculate $A_0, A_1, A_2, A_3$ and $B_0, B_1, B_2$.
+\item Write closed-form formula for $B_n$.
+\item Calculate $\bigcup_{2 \leq n \in \mathbb{N}}B_n$.  Prove the result
+using set containment relation.
+\item Using general rules for set subtraction and union as well as De Morgan
+laws as applied to universal and existential quantifiers, prove the
+generalized formulae for $\bigcup_{i \in I}(A')$ and 
+$\bigcap_{i \in I}(A')$.
+\item Let $D_n = \mathbb{R} \setminus B_n$.  Calculate 
+      $\bigcup_{2 \leq n \in \mathbb{N}}D_n$.
+\end{enumerate}
+
+\subsubsection{Answer 6}
+\label{sec-1-4-1}
+It is easy to do the calculation by hand, but to make it more interesting
+I wrote some Prolog code to do it.  An intuitive way to see what is going
+on is to observe that every consequent $A$ will contain the entire previous
+set and two more members, which are greater than the maximal element of
+the previously collected set.
+
+\lstset{language=prolog,numbers=none}
+\begin{lstlisting}
+:- use_module(library(clpfd)).
+
+set_A(N, Set) :- 
+    High is N * 2 + 2,
+    X in 4..High,
+    findall(X, indomain(X), Set).
+
+set_B(N, Set) :-
+    set_A(N, A_n),
+    N1 is N + 1,
+    set_A(N1, A_n1),
+    subtract(A_n1, A_n, Set).
+
+all_sets(N, Pred, Answer) :-
+    X in 1..N, indomain(X),
+    call(Pred, X, Answer).
+
+zip(X, Y, [X, Y]).
+
+join(_, [X], X) :- !.
+join(Sep, [X | Xs], S) :-
+    join(Sep, Xs, Sx),
+    string_concat(Sep, Sx, Sy),
+    string_concat(X, Sy, S).
+
+question_1(Na, Nb, As, Bs):-
+    findall(As, all_sets(Na, set_A, As), As),
+    findall(Bs, all_sets(Nb, set_B, Bs), Bs),
+    X in 1..Na,
+    Y in 1..Nb,
+    findall(X, indomain(X), Nas),
+    findall(Y, indomain(Y), Nbs),
+    maplist(join(','), As, Jas),
+    maplist(join(','), Bs, Jbs),
+    maplist(zip, Nas, Jas, Zas),
+    maplist(zip, Nbs, Jbs, Zbs),
+    maplist(format('$A_~p=\\{~p\\}$~n~n'), Zas),
+    maplist(format('$B_~p=\\{~p\\}$~n~n'), Zbs).
+\end{lstlisting}
+
+$A_1=\{4\}$
+
+$A_2=\{4,5,6\}$
+
+$A_3=\{4,5,6,7,8\}$
+
+$B_1=\{5,6\}$
+
+$B_2=\{7,8\}$
+
+$B_3=\{9,10\}$
+
+\subsubsection{Answer 7}
+\label{sec-1-4-2}
+$B = \{x \in \mathbb{R} | 2(n+1) < x \leq 2(n+2)\}$.
+\subsubsection{Answer 8}
+\label{sec-1-4-3}
+First, let me make the claim that $\bigcup_{2 \leq n \in \mathbb{N}}=A_{n+1}$.
+Below, is the proof that doesn't require division in two cases (it peruses
+the definition of $B_n$ and the general technique of extraction of the last
+term of a sequence).
+
+\begin{equation*}
+  \begin{aligned}
+    \bigcup_{2 \leq n \in \mathbb{N}} B_n &=
+    \bigcup_{2 \leq n \in \mathbb{N}} A_{n+1} \setminus A_n \\
+    &= \bigcup_{2 \leq n \in \mathbb{N}} A_{n+1} \setminus
+    \bigcup_{2 \leq n \in \mathbb{N}} A_n \\
+    &= \bigcup_{2 \leq n \in \mathbb{N}} A_n \setminus
+    \bigcup_{2 \leq n \in \mathbb{N}} A_n \cup A_{n+1} \\
+    &= A_{n+1}
+  \end{aligned}
+\end{equation*}
+\subsubsection{Answer 9}
+\label{sec-1-4-4}
+First, let me reiterate De Morgan's law for first-order quantifiers:
+\begin{equation*}
+  \begin{aligned}
+    \lnot \forall x. \phi \iff \exists x. \lnot \phi.
+  \end{aligned}
+\end{equation*}
+
+Combining it with the definitions of union of complement sets and
+intersection of complement sets gives us the following proof:
+
+\begin{equation*}
+  \begin{aligned}
+    x \in \bigcap_{i \in I} (A_i)'
+    &\iff \forall i (i \in I \implies x \in A') \\
+    &\iff \exists i (i \in I \implies x \in A)' \\
+    &\iff x \in (\bigcup_{i \in I} A_i)'.
+  \end{aligned}
+\end{equation*}
+
+\emph{Note that the proof treats negation equivalently to complementation.}
+
+The proof for the union is symmetrical:
+\begin{equation*}
+  \begin{aligned}
+    x \in \bigcup_{i \in I} (A_i)'
+    &\iff \exists i (i \in I \implies x \in A') \\
+    &\iff \forall i (i \in I \implies x \in A)' \\
+    &\iff x \in (\bigcap_{i \in I} A_i)'.
+  \end{aligned}
+\end{equation*}
+\subsubsection{Answer 10}
+\label{sec-1-4-5}
+Reusing definitions and conclusions derived above gives:
+\begin{equation*}
+  D_n = \mathbb{R} \setminus B_n = \mathbb{R} \cap (B_n)'.
+\end{equation*}
+\begin{equation*}
+  \begin{aligned}
+    \bigcap_{2 \leq n \in \mathbb{N}} D_n
+    &= \bigcap_{2 \leq n \in \mathbb{N}} \mathbb{R} \cap (B_n)' \\
+    &= \mathbb{R} \cap \bigcap_{2 \leq n \in \mathbb{N}} (B_n)' \\
+    &= \mathbb{R} \cap (\bigcup_{2 \leq n \in \mathbb{N}} B_n)' \\
+    &= \mathbb{R} \cap (\bigcup_{2 \leq n \in \mathbb{N}} A_{n+1} \setminus A_n)' \\
+    &= \mathbb{R} \cap (\bigcup_{2 \leq n \in \mathbb{N}} A_{n+1}
+    \setminus \bigcup_{2 \leq n \in \mathbb{N}} A_n)' \\
+    &= \mathbb{R} \cap (\bigcup_{2 \leq n \in \mathbb{N}} A_{n+1}
+    \cap (\bigcup_{2 \leq n \in \mathbb{N}} A_n)')' \\
+    &= \mathbb{R} \cap (\bigcup_{2 \leq n \in \mathbb{N}} A_{n+1})'
+    \cup (\bigcup_{2 \leq n \in \mathbb{N}} A_n)' \\
+    &= \mathbb{R} \cap (A_{n+1})' \\
+    &= \mathbb{R} \setminus A_{n+1}
   \end{aligned}
 \end{equation*}
 % Emacs 25.0.50.1 (Org mode 8.2.2)
