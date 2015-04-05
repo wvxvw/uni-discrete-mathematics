@@ -36,3 +36,53 @@ question_1(Na, Nb, As, Bs):-
     maplist(zip, Nbs, Jbs, Zbs),
     maplist(format('$A_~p=\\{~p\\}$~n'), Zas),
     maplist(format('$B_~p=\\{~p\\}$~n'), Zbs).
+
+%% Assignment 2
+
+cross(Set, (A, B)) :- member(A, Set), member(B, Set).
+
+pairs(Set, Pairs) :- findall(X, cross(Set, X), Pairs).
+
+reflexive([], _) :- !.
+reflexive([X | Xs], Relation) :-
+    member((X, X), Relation), reflexive(Xs, Relation).
+
+symmetric(Relation) :-
+    Relation = [] ; symmetric(Relation, Relation).
+symmetric([], _) :- !.
+symmetric([(X, Y) | Xs], Relation) :-
+    member((Y, X), Relation), symmetric(Xs, Relation).
+
+antisymmetric(Relation) :-
+    Relation = [] ; antisymmetric(Relation, Relation).
+antisymmetric([], _) :- !.
+antisymmetric([(X, Y) | Xs], Relation) :-
+    ( \+ member((Y, X), Relation) ; X = Y ),
+    antisymmetric(Xs, Relation).
+
+transitive(Relation) :-
+    forall((member((X, Y), Relation), member((Y, Z), Relation)),
+           member((X, Z), Relation)).
+
+equivalence(Set, Relation) :-
+    reflexive(Set, Relation),
+    symmetric(Relation),
+    transitive(Relation).
+
+pair(X, Xs, (X, Y)) :- member(Y, Xs).
+
+relproduct_helper([], _, []) :- !.
+relproduct_helper([(X, Y) | R1], R2, [Pair | R]) :-
+    findall(Z, member((Y, Z), R2), Z),
+    findall(Pair, pair(X, Z, Pair), Pair),
+    relproduct_helper(R1, R2, R).
+relproduct(R1, R2, R) :-
+    relproduct_helper(R1, R2, Raw),
+    flatten(Raw, Flat),
+    list_to_set(Flat, R).
+
+relation_S(Set, S) :- pairs(Set, Pairs), pairs(Pairs, S).
+
+%% relation_RR(S, RR) :-
+%%     relproduct(S, S, R),
+%%     exclude(=(R), 

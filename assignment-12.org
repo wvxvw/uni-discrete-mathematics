@@ -1,0 +1,104 @@
+# -*- fill-column: 80; org-confirm-babel-evaluate: nil -*-
+
+#+TITLE:     Assignment 12, Discrete Mathematics
+#+AUTHOR:    Oleg Sivokon
+#+EMAIL:     olegsivokon@gmail.com
+#+DATE:      <2015-04-05 Sun>
+#+DESCRIPTION: Second asssignment in the course Discrete Mathematics
+#+KEYWORDS: Discrete Mathematics, Assignment, Relations
+#+LANGUAGE: en
+#+LaTeX_CLASS: article
+#+LATEX_HEADER: \usepackage[usenames,dvipsnames]{color}
+#+LATEX_HEADER: \usepackage[backend=bibtex, style=numeric]{biblatex}
+#+LATEX_HEADER: \usepackage{commath}
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usetikzlibrary{shapes,backgrounds}
+#+LATEX_HEADER: \usepackage{marginnote}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{enumerate}
+#+LATEX_HEADER: \hypersetup{urlcolor=blue}
+#+LATEX_HEADER: \hypersetup{colorlinks,urlcolor=blue}
+#+LATEX_HEADER: \addbibresource{bibliography.bib}
+#+LATEX_HEADER: \setlength{\parskip}{16pt plus 2pt minus 2pt}
+#+LATEX_HEADER: \definecolor{codebg}{rgb}{0.96,0.99,0.8}
+#+LATEX_HEADER: \definecolor{codestr}{rgb}{0.46,0.09,0.2}
+
+#+BEGIN_SRC emacs-lisp :exports none
+(setq org-latex-pdf-process
+        '("latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f")
+        org-latex-listings t
+        org-src-fontify-natively t
+        org-babel-latex-htlatex "htlatex")
+(defmacro by-backend (&rest body)
+    `(cl-case (when (boundp 'backend) (org-export-backend-name backend))
+       ,@body))
+#+END_SRC
+
+#+RESULTS:
+: by-backend
+
+#+BEGIN_LATEX
+  \lstset{ %
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+    breaklines=false,
+    captionpos=b,                    % sets the caption-position to bottom
+    commentstyle=\color{mygreen},    % comment style
+    framexleftmargin=10pt,
+    xleftmargin=10pt,
+    framerule=0pt,
+    frame=tb,                        % adds a frame around the code
+    keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+    keywordstyle=\color{blue},       % keyword style
+    showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+    showstringspaces=false,          % underline spaces within strings only
+    showtabs=false,                  % show tabs within strings adding particular underscores
+    stringstyle=\color{codestr},     % string literal style
+    tabsize=2,                       % sets default tabsize to 2 spaces
+  }
+#+END_LATEX
+
+\clearpage
+
+* Problems
+
+** Problem 1
+   Let $M$ be the set of all relations over $A=\{1, 2, 3\}$.
+   1. How many members does $M$ have?
+   2. Let $S$ be a set of relations over $M$, defined as follows:
+      #+HEADER: :exports results
+      #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
+      #+BEGIN_SRC latex
+        \begin{equation*}
+          S=\{R_1R_2 | R_1, R_2 \in M \land R_1R_2 = R_2R_1\}.
+        \end{equation*}
+      #+END_SRC
+      Show that $S$ is not an equivalence relation.
+
+*** Answer 1
+    The number of elements of $M$ is $\left|M\right|}^2=3^2=9$.  This can be
+    proved from a partial sum of a recurence: $a_{n+1} = a_n + 2n - 1$, but I
+    will omit the proof. Intuitively, the number of relations of a set of
+    cardinality $n+1$, is as big as the number of relations of a set with
+    cardinality $n$ plus a number of relations we can create from the element
+    added to the elements already counted ($n - 1)$, plus the number of
+    relations to the element added from elements already counted ($n - 1$),
+    plus the relation from the element added to itself.
+
+*** Answer 3
+    I will prove that $S$ is not an equivalence using the definition of
+    equivalence which states that a relation is an equivalence if it is
+    *relfexive*, *symmetric* and *transitive*.  It is easy to see that the
+    definition of reflexivity requires that /all/ members of $M$ be present in
+    the relation, but, for example, $(1, 2)$ is absent from $S$.  Suppose, for
+    contradiction, it was present in $S$, then it would imply that there exists
+    a pair $(a, b) \in M$ s.t. $((1, 2), (a, b)) \in S$ and $((a, b), (1, 2))
+    \in\nobreak S$.  By looking at the first and the last members of the two members of
+    $S$ we know that $(1, 2) \circ (a, b) = (1, b)$ and $(a, b) \circ (1, 2) = (a,
+    2)$, in other words it is necessary that: $(1, 2) \circ (a, b) = (1, b) =
+    (1, 2) = (a, 2) = (a, b) \circ (1, 2)$, which in turn, means that $b=2$ and
+    $a=1$.  Plugging these values back into original equilaty gives $(1, 2) \circ
+    (1, 2) = (1, 2)$, which is obviously false.  Hence, by contradiction, the
+    proof is complete.

@@ -5,3 +5,6 @@
 *.fls
 *~
 *.run.xml
+*.zip
+*_flymake.*
+*-copy.*
