@@ -78,7 +78,7 @@
       Show that $S$ is not an equivalence relation.
 
 *** Answer 1
-    The number of elements of $M$ is $\exp(\left|A\right|}^2)/e^2 = 2^{3^2} = 2^9
+    The number of elements of $M$ is $2^{\left|A\right|}^2} = 2^{3^2} = 2^9
     = 512$.  This can be proved from a partial sum of a recurence: $a_{n+1} =
     a_n + 2n - 1$, which describes the maximum number of ordered pairs possible
     to create from $n$ elements and $b_n = 2b_{n-1}$ recurrence which describes
