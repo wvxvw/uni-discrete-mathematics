@@ -78,27 +78,52 @@
       Show that $S$ is not an equivalence relation.
 
 *** Answer 1
-    The number of elements of $M$ is $\left|M\right|}^2=3^2=9$.  This can be
-    proved from a partial sum of a recurence: $a_{n+1} = a_n + 2n - 1$, but I
-    will omit the proof. Intuitively, the number of relations of a set of
-    cardinality $n+1$, is as big as the number of relations of a set with
-    cardinality $n$ plus a number of relations we can create from the element
-    added to the elements already counted ($n - 1)$, plus the number of
-    relations to the element added from elements already counted ($n - 1$),
-    plus the relation from the element added to itself.
+    The number of elements of $M$ is $\exp(\left|A\right|}^2)/e^2 = 2^{3^2} = 2^9
+    = 512$.  This can be proved from a partial sum of a recurence: $a_{n+1} =
+    a_n + 2n - 1$, which describes the maximum number of ordered pairs possible
+    to create from $n$ elements and $b_n = 2b_{n-1}$ recurrence which describes
+    the number of elements of a powerset.  Since one can see that the number
+    of relations over a set is exactly the number of ways to subset the set of
+    all ordered pairs possible to create from that set, the final answer is
+    the composition of both recurrences: $c_n=b_n \circ a_n$.
+
+    Below I've implemented the counting algorithm in Prolog:
+
+    #+HEADER: :system swipl :exports both :results raw
+    #+HEADER: :goal question_1([1, 2, 3]).
+    #+BEGIN_SRC prolog
+      powerset(Set, Result) :-
+          powerset_helper(Set, [[]], Result).
+      powerset_helper([], X, X) :- !.
+      powerset_helper([X | Xs], In, Result) :-
+          findall(Z, (member(Y, In), append([X], Y, Z)), Z),
+          append(In, Z, Next),
+          powerset_helper(Xs, Next, Result).
+      
+      cross(Set, (A, B)) :- member(A, Set), member(B, Set).
+      
+      pairs(Set, Pairs) :- findall(X, cross(Set, X), Pairs).
+      
+      question_1(A) :-
+          pairs(A, Pairs),
+          powerset(Pairs, M),
+          length(M, Len),
+          format("$\\left|M\\right| = ~p$~n", [Len]).
+    #+END_SRC
 
 *** Answer 3
     I will prove that $S$ is not an equivalence using the definition of
     equivalence which states that a relation is an equivalence if it is
     *relfexive*, *symmetric* and *transitive*.  It is easy to see that the
     definition of reflexivity requires that /all/ members of $M$ be present in
-    the relation, but, for example, $(1, 2)$ is absent from $S$.  Suppose, for
-    contradiction, it was present in $S$, then it would imply that there exists
-    a pair $(a, b) \in M$ s.t. $((1, 2), (a, b)) \in S$ and $((a, b), (1, 2))
-    \in\nobreak S$.  By looking at the first and the last members of the two members of
-    $S$ we know that $(1, 2) \circ (a, b) = (1, b)$ and $(a, b) \circ (1, 2) = (a,
-    2)$, in other words it is necessary that: $(1, 2) \circ (a, b) = (1, b) =
-    (1, 2) = (a, 2) = (a, b) \circ (1, 2)$, which in turn, means that $b=2$ and
-    $a=1$.  Plugging these values back into original equilaty gives $(1, 2) \circ
-    (1, 2) = (1, 2)$, which is obviously false.  Hence, by contradiction, the
-    proof is complete.
+    the relation, but, for example, $\{(1, 2)\}$ is absent from $S$.  Suppose,
+    for contradiction, it was present in $S$, then it would imply that there
+    exists a pair $\{(a, b)\} \in M$ s.t. $(\{(1, 2)\}, \{(a, b)\}) \in S$ and
+    $(\{(a, b)\}, \{(1, 2)\}) \in\nobreak S$.  By looking at the first and the
+    last members of the two members of $S$ we know that $\{(1, 2)\} \circ \{(a,
+    b)\} = \{(1, b)\}$ and $\{(a, b)\} \circ \{(1, 2)\} = \{(a, 2)\}$, in other
+    words it is necessary that: $\{(1, 2)\} \circ \{(a, b)\} = \{(1, b)\} =
+    \{(1, 2)\} = \{(a, 2)\} = \{(a, b)\} \circ \{(1, 2)\}$, which in turn, means
+    that $b=2$ and $a=1$.  Plugging these values back into original equilaty
+    gives $\{(1, 2)\} \circ \{(1, 2)\} = \{(1, 2)\}$, which is obviously false.
+    Hence, by contradiction, the proof is complete.

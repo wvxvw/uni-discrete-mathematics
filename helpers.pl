@@ -86,3 +86,26 @@ relation_S(Set, S) :- pairs(Set, Pairs), pairs(Pairs, S).
 %% relation_RR(S, RR) :-
 %%     relproduct(S, S, R),
 %%     exclude(=(R), 
+
+perm_element(Set, Element, Result) :-
+    append(X, Y, Set), append([X, [Element], Y], Result).
+
+permutations(Set, Powerset) :-
+    perm_helper(Set, [[]], Powerset).
+perm_helper([], X, X) :- !.
+perm_helper([X | Xs], In, Out) :-
+    findall(Res, 
+            ( member(Sub, In), 
+              findall(Res, perm_element(Sub, X, Res), Res) ),
+            Res),
+    append(Res, Flat),
+    append([In, Flat], Total),
+    perm_helper(Xs, Total, Out).
+
+powerset(Set, Result) :-
+    powerset_helper(Set, [[]], Result).
+powerset_helper([], X, X) :- !.
+powerset_helper([X | Xs], In, Result) :-
+    findall(Z, (member(Y, In), append([X], Y, Z)), Z),
+    append(In, Z, Next),
+    powerset_helper(Xs, Next, Result).
