@@ -109,3 +109,53 @@ powerset_helper([X | Xs], In, Result) :-
     findall(Z, (member(Y, In), append([X], Y, Z)), Z),
     append(In, Z, Next),
     powerset_helper(Xs, Next, Result).
+
+like((X, X)).
+
+likes(In, Pairs) :-
+    pairs(In, Raw),
+    include(like, Raw, Pairs).
+
+query_parts(['[surname] LIKE "%~p%"',
+             '[name] LIKE "%~p%"',
+             '[midname] LIKE "%~p%"',
+             'course="~p"',
+             'group="~p"']).
+
+tuple([], [], []) :- !.
+tuple([X | Xs], [Y | Ys], [(X, Y) | Zs]) :- tuple(Xs, Ys, Zs).
+
+exclude_query((false, _)).
+
+interleave([X], _, X) :- !.
+interleave([X | Xs], Glue, Result) :-
+    interleave(Xs, Glue, Previous),
+    format(atom(Result), "~p~p~p", [X, Glue, Previous]).
+
+each(Elt, List, Predicate, Collector, Result) :-
+    findall(Collector, (member(Elt, List), Predicate), Result).
+
+build_query(fields(Surname, Name, Midname, Course, Group), Query) :-
+    Fields = [Surname, Name, Midname, Course, Group],
+    query_parts(Parts),
+    tuple(Fields, Parts, Tuples),
+    exclude(exclude_query, Tuples, Filtered),
+    each((X, Y), Filtered, format(atom(Z), Y, [X]), Z, Disjoint),
+    atomic_to_string(Disjoint, ' and ', Query).
+    interleave(Disjoint, ' and ', Query).
+
+%% ?- build_query(fields('Kaczynski', 'Ted', false, 'Number Theory', false), Q).
+%% Q = '[surname] LIKE "%Kaczynski%" and [name] LIKE "%Ted%" and course="Number Theory"'.
+
+plus(X, Y, Z) :- Z is X + Y.
+
+reduce([], X, _, X) :- !.
+reduce([X | Xs], Acc, Predicate, Result) :-
+    call(Predicate, Acc, X, Interim), 
+    reduce(Xs, Interim, Predicate, Result).
+reduce([X | Xs], Predicate, Result) :- reduce(Xs, X, Predicate, Result).
+
+mapconcat_helper(Glue, X, Y, Z) :- format(atom(Z), '~p~p~p', [X, Glue, Y]).
+
+mapconcat(List, Glue, Result) :-
+    reduce(List, mapconcat_helper(Glue), Result).
