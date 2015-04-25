@@ -1,0 +1,197 @@
+% Created 2015-04-26 Sun 00:47
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage[utf8]{inputenc}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage[backend=bibtex, style=numeric]{biblatex}
+\usepackage{commath}
+\usepackage{eufrak}
+\usepackage{tikz}
+\usetikzlibrary{shapes,backgrounds}
+\usepackage{marginnote}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\hypersetup{urlcolor=blue}
+\hypersetup{colorlinks,urlcolor=blue}
+\addbibresource{bibliography.bib}
+\setlength{\parskip}{16pt plus 2pt minus 2pt}
+\definecolor{codebg}{rgb}{0.96,0.99,0.8}
+\definecolor{codestr}{rgb}{0.46,0.09,0.2}
+\author{Oleg Sivokon}
+\date{\textit{<2015-04-05 Sun>}}
+\title{Assignment 13, Discrete Mathematics}
+\hypersetup{
+  pdfkeywords={Discrete Mathematics, Assignment, Relations},
+  pdfsubject={Third asssignment in the course Discrete Mathematics},
+  pdfcreator={Emacs 25.0.50.1 (Org mode 8.2.2)}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\lstset{ %
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\scriptsize,
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=false,
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  framexleftmargin=10pt,
+  xleftmargin=10pt,
+  framerule=0pt,
+  frame=tb,                        % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stringstyle=\color{codestr},     % string literal style
+  tabsize=2,                       % sets default tabsize to 2 spaces
+}
+
+\clearpage
+
+\section{Problems}
+\label{sec-1}
+
+\subsection{Problem 1}
+\label{sec-1-1}
+Demonstrate five distinct stes: $A$, $B$, $A \cup B$, $A \oplus B$, $A \setminus B$,
+all of which have the same cardinality.
+
+\subsubsection{Answer 1}
+\label{sec-1-1-1}
+There's a popular programming puzzle called ``FizzBuzz''.  The taks is to
+print natural numbers according to the rule: if a number is divizible by
+three, the program prints \texttt{fizz}, if the number is divisible by five the
+program prints \texttt{buzz} (when both condition holds, the program thus prints
+\texttt{fizzbuzz}, hence the name).  Otherwise the program prints the number itself.
+
+It is easy to see that the description above perfectly matches the requirement:
+\begin{equation*}
+  \begin{aligned}
+    A             &= \{x \in \mathbb{N} \; | \; x \bmod 3 = 0\} \\
+    B             &= \{x \in \mathbb{N} \; | \; x \bmod 5 = 0\} \\
+    A \cup B      &= \{x \in \mathbb{N} \; | \; x \bmod 3 = 0 \lor x \bmod 5 = 0\} \\
+    A \oplus B    &= \{x \in \mathbb{N} \; | \; (x \bmod 3 = 0 \lor x \bmod 5 = 0)
+                      \land \lnot (x \bmod 15 = 0)\} \\
+    A \setminus B &= \{x \in \mathbb{N} \; | \; x \bmod 3 = 0 \land \lnot (x \bmod 5 = 0)\}.
+  \end{aligned}
+\end{equation*}
+
+The cardinality of all sets is $\aleph_0$ and neither one of them is equal to any
+other set.
+\subsection{Problem 2}
+\label{sec-1-2}
+\begin{enumerate}
+\item Let $n$ be a natural number. Show that the set of all subsets of $\mathbb{N}$ of
+cardinality exactly $n$ is a countable set.
+\item Show that the set of all finite subsets of $\mathbb{N}$ is countable.
+\item Show that the set of all infinite subsets of $\mathbb{N}$ is not countable.
+\item Find the cardinality of the set given in (3).
+\item $\aleph_0 = \abs{\{X \in P(\mathbb{N}) | \abs{X} = n\}}$ is the restatement of (1).
+Write a similar statement for (2) and (4).
+\end{enumerate}
+
+\subsubsection{Answer 2}
+\label{sec-1-2-1}
+
+\subsubsection{Answer 3}
+\label{sec-1-2-2}
+
+\subsubsection{Answer 4}
+\label{sec-1-2-3}
+
+\subsubsection{Answer 5}
+\label{sec-1-2-4}
+
+\subsubsection{Answer 6}
+\label{sec-1-2-5}
+\subsection{Problem 3}
+\label{sec-1-3}
+Find the error in the following:
+
+\begin{quote}
+We shall define simmetric set difference as follows: let $k$ and $m$ be cardinalities,
+not necessarily distinct.  Define $k \oplus m$ to mean $A$ and $B$ sets for which
+$\abs{A} = k$ and $\abs{B} = m$, then the cardinality of $A \oplus B$ is the value
+of $k \oplus m$.
+\end{quote}
+
+\subsubsection{Answer 7}
+\label{sec-1-3-1}
+Since we are trying to define a \emph{binary operation}, we must make sure that the
+result (or value) of this operation is uniquely defined.  But it is easy to see
+it is not the case, since if $\abs{A \cap B} \neq \abs{A' \cap B'}$
+while at the same time $\abs{A} = \abs{A'}$ and $\abs{B} = \abs{B'}$, we will get
+that $k \oplus m \neq k \oplus m$.  Thus our attempt at defining a ring-sum
+operation will fail.
+\subsection{Problem 4}
+\label{sec-1-4}
+\begin{enumerate}
+\item Let $k_1, k_2, m_1, m_2$ be cardinalities. Prove that if $k_1 \leq k_2$ and
+      $m_1 \leq m_2$ then $k_1 \times m_1 \leq k_2 \times m_2$.
+\item Prove that $\mathfrak{c} \times \aleph_0 = \mathfrak{c}$.
+\item Prove that $\mathfrak{c}^{\mathfrak{c}} = 2^{\mathfrak{c}}$.
+\end{enumerate}
+
+\subsubsection{Answer 8}
+\label{sec-1-4-1}
+Recall that the product of cardinalities is defined to be the cardinality of
+cartesian product.  Also, recall that $\abs{A} \leq \abs{B}$, implies having
+an injective function from $A$ to $B$.  Now we can combine these two facts
+to build the proof.  Suppose for contradiction that it was possible that
+$k_1 \times m_1 > k_2 \times m_2$.  This would mean that for some sets $A$
+and $B$ the cartesian product with cardinality $k_1 \times m_1$ defined by
+$A \times B$ contains a pair $(a, b)$ with a property that for the chosen
+injective function from $A$ to $A'$ $a$ is not the source of any element in
+$A'$. But we are given that there is an injective function from $A'$ to $A$
+(because $k_1 \leq k_2$).  The argument for $b$ is identical.  Recall that
+the function must be defined for each element in its domain, but this stands
+in contradiction to the earlier claim that $a$ (or $b$) is not in the domain
+of this function.  Since this is not possible, the proof is complete.
+\subsubsection{Answer 9}
+\label{sec-1-4-2}
+To prove $\mathfrak{c} \times \aleph_0 = \mathfrak{c}$ we can use the fact
+that there are no cardinal numbers between $\mathfrak{c}$ and $\aleph_2$.
+Also relying on the ``sandwich'' theorem, which says that if we can find a
+superset with cardinality $n$ and a subset with the cardinality $n$,
+then the cardinality of the set ``sandwiched'' in between must be $n$.
+Consider $\mathfrak{c} \leq \mathfrak{c} \times \aleph_0 \leq \mathfrak{c}
+    \times \mathfrak{c}$.  We can show that $\mathfrak{c} \times \aleph_0$ is at
+least as big as $\mathfrak{c}$ since $\aleph_0$ is defined to be the
+multiplicative identity.  We can also show that $\mathfrak{c} \times
+    \mathfrak{c} = \mathfrak{c}$ by perusing Cantor's theorem which proves that
+the cartesian product of an infinite set with itself has the same cardinality
+as the initial set.  Thus $\mathfrak{c} \times \aleph_0 = \mathfrak{c}$.
+\subsubsection{Answer 10}
+\label{sec-1-4-3}
+Observe that $\mathfrak{c}^{\mathfrak{c}}$ is the cardinality of the set of
+all functions from a set of cardinality $\mathfrak{c}$ to itself, while
+$2^{\mathfrak{c}}$ is the cardinality of the power-set of cardinality
+$\mathfrak{c}$.  We know (from Cantor's diagonal argument) that $\abs{X} <
+    \abs{P(X)}$ for all sets, this means that in particular $2^{\mathfrak{c}} <
+    2^{2^\mathfrak{c}}$.  Since we know that cardinality of exponentiation is
+non-decreasing in both arguments it follows that $\mathfrak{c}^{
+    \mathfrak{c}} < 2^{2^{\mathfrak{c}}}$.  And because there are no cardinal
+numbers between $X$ and $P(X)$ we can conclude that
+$\mathfrak{c}^{\mathfrak{c}} = 2^{\mathfrak{c}}$.
+% Emacs 25.0.50.1 (Org mode 8.2.2)
+\end{document}
