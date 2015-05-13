@@ -1,0 +1,115 @@
+# -*- fill-column: 80; org-confirm-babel-evaluate: nil -*-
+
+#+TITLE:     Assignment 14, Discrete Mathematics
+#+AUTHOR:    Oleg Sivokon
+#+EMAIL:     olegsivokon@gmail.com
+#+DATE:      <2015-05-13 Wed>
+#+DESCRIPTION: Second asssignment in the course Discrete Mathematics
+#+KEYWORDS: Discrete Mathematics, Assignment, Relations
+#+LANGUAGE: en
+#+LaTeX_CLASS: article
+#+LATEX_HEADER: \usepackage[usenames,dvipsnames]{color}
+#+LATEX_HEADER: \usepackage[backend=bibtex, style=numeric]{biblatex}
+#+LATEX_HEADER: \usepackage{commath}
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usetikzlibrary{shapes,backgrounds}
+#+LATEX_HEADER: \usepackage{marginnote}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{enumerate}
+#+LATEX_HEADER: \hypersetup{urlcolor=blue}
+#+LATEX_HEADER: \hypersetup{colorlinks,urlcolor=blue}
+#+LATEX_HEADER: \addbibresource{bibliography.bib}
+#+LATEX_HEADER: \setlength{\parskip}{16pt plus 2pt minus 2pt}
+#+LATEX_HEADER: \definecolor{codebg}{rgb}{0.96,0.99,0.8}
+#+LATEX_HEADER: \definecolor{codestr}{rgb}{0.46,0.09,0.2}
+
+#+BEGIN_SRC emacs-lisp :exports none
+  (setq org-latex-pdf-process
+          '("latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f")
+          org-latex-listings t
+          org-src-fontify-natively t
+          org-latex-custom-lang-environments '((maxima "maxima"))
+          org-babel-latex-htlatex "htlatex")
+  (defmacro by-backend (&rest body)
+      `(cl-case (when (boundp 'backend) (org-export-backend-name backend))
+         ,@body))
+#+END_SRC
+
+#+RESULTS:
+: by-backend
+
+#+BEGIN_LATEX
+  \definecolor{codebg}{rgb}{0.96,0.99,0.8}
+  \lstnewenvironment{maxima}{%
+    \lstset{backgroundcolor=\color{codebg},
+      aboveskip=20pt,
+      showstringspaces=false,
+      frame=single,
+      framerule=0pt,
+      basicstyle=\ttfamily\scriptsize,
+      columns=fixed}}{}
+  }
+  \makeatletter
+  \newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
+  \makeatother
+  \verbatimfont{\small}%
+  \clearpage
+#+END_LATEX
+
+* Problems
+
+** Problem 1
+   1. Develop the identity $(3 - 2)^n = 1$ using binom of Newton formula:
+      #+HEADER: :exports results
+      #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
+      #+BEGIN_SRC latex
+        \begin{equation*}
+          \sum_{i = 0}^n {?\choose ?} 3^? \cdot (??)^? = 1
+        \end{equation*}
+      #+END_SRC
+      And verify the identity for the case $n = 4$.
+   2. Let number of ways to distribute $k$ identical balls between 10
+      boxes is $D(10, k)$.  Paint three boxes green and the remaining
+      seven---red.  Derive:
+      #+HEADER: :exports results
+      #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
+      #+BEGIN_SRC latex
+        \begin{equation*}
+          D(10, k) = \sum_{i = 0}^k ???,
+        \end{equation*}
+      #+END_SRC
+      and verify for the case $k = 3$.
+
+*** Answer 1
+    #+HEADER: :exports results
+    #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
+    #+BEGIN_SRC latex
+      \begin{equation*}
+        \sum_{i = 0}^n {i\choose n} 3^i \cdot (-2)^{n - i} = 1.
+      \end{equation*}
+    #+END_SRC
+    *Solution:* /(using Maxima)/
+    #+NAME: prob3
+    #+HEADER: :exports both
+    #+BEGIN_SRC maxima :results output raw
+      n: 4$
+      tex(sum(binomial(n, i) * 3^i * (-2)^(n - i), i, 0, n));
+    #+END_SRC
+    /(hand-made)/
+    #+HEADER: :exports results
+    #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
+    #+BEGIN_SRC latex
+      \begin{align*}
+        &\sum_{i = 0}^4 {i\choose 4} 3^i \cdot (-2)^{4 - i} \\
+        &= 1 \cdot 3^0 \cdot (-2)^4 + 4 \cdot 3^1 \cdot (-2)^3 +
+        6 \cdot 3^2 \cdot (-2)^2 + 4 \cdot 3^3 \cdot (-2)^1 +
+        1 \cdot 3^4 \cdot (-2)^0 \\
+        &= 16 - 96 + 216 - 216 + 81 \\
+        &= 1
+      \end{align*}
+    #+END_SRC
+
+*** Answer 2
+    
+

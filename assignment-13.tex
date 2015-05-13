@@ -1,4 +1,4 @@
-% Created 2015-04-26 Sun 00:47
+% Created 2015-05-05 Tue 21:14
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -18,7 +18,6 @@
 \tolerance=1000
 \usepackage[utf8]{inputenc}
 \usepackage[usenames,dvipsnames]{color}
-\usepackage[backend=bibtex, style=numeric]{biblatex}
 \usepackage{commath}
 \usepackage{eufrak}
 \usepackage{tikz}
@@ -29,7 +28,6 @@
 \usepackage{enumerate}
 \hypersetup{urlcolor=blue}
 \hypersetup{colorlinks,urlcolor=blue}
-\addbibresource{bibliography.bib}
 \setlength{\parskip}{16pt plus 2pt minus 2pt}
 \definecolor{codebg}{rgb}{0.96,0.99,0.8}
 \definecolor{codestr}{rgb}{0.46,0.09,0.2}
@@ -73,7 +71,7 @@
 
 \subsection{Problem 1}
 \label{sec-1-1}
-Demonstrate five distinct stes: $A$, $B$, $A \cup B$, $A \oplus B$, $A \setminus B$,
+Demonstrate five distinct sets: $A$, $B$, $A \cup B$, $A \oplus B$, $A \setminus B$,
 all of which have the same cardinality.
 
 \subsubsection{Answer 1}
@@ -112,18 +110,42 @@ Write a similar statement for (2) and (4).
 
 \subsubsection{Answer 2}
 \label{sec-1-2-1}
-
+We can construct the set of all subsets of $\mathbb{N}$ by repeating cartesian
+product $n$ times.  Since $\abs{\mathbb{N} \times \mathbb{N}} = \aleph_0$ so
+is the $\abs{\mathbb{N}^n} = \aleph_0$ (because $n$ is finite).  Note that
+the requested sets in this case are given by the resulting ordered pairs.  I.e.
+$(x_1, (x_2, \hdots (x_{n-1}, x_n) \hdots) \in \mathbb{N}^n$.  In fact, we need
+only the unique tuples, of which there are even less.
 \subsubsection{Answer 3}
 \label{sec-1-2-2}
-
+This continues the argument from \ref{sec-1-2-1}, but constructs the sets in question
+using recursive definition: $\bigcup_{i=1}^n \mathbb{N}^i$ since there are
+no infinte exponents involved in this construction, it must describe a countable
+set.
 \subsubsection{Answer 4}
 \label{sec-1-2-3}
-
+The set of all infinite sets can be described as $\mathbb{N}^{\mathbb{N}}$.
+We can substitute $\mathbb{N}$ for any infinite subset because any infinite
+subset of $\mathbb{N}$ is equivalent to $\mathbb{N}$, which follows from
+definition of infinite set).  Because set exponentiation is non-decreasing
+in both arguments, this set has cardinality of at least $2^{\mathbb{N}}$,
+which is the cardinality of the powerset, which, by Cantor's theorem
+is infinitely larger than any countable set.
 \subsubsection{Answer 5}
 \label{sec-1-2-4}
-
+We just stated that the requested set is equivalent to
+$\mathbb{N}^{\mathbb{N}}$ in \ref{sec-1-2-3}.  Hence its cardinality is at least
+$\mathfrak{c}$ and no greater than $2^\mathfrak{c}$.  Assuming (here and
+through the rest of the answers) continuity hypothesis is true, the
+cardinality of the set in question is $\mathfrak{c}$.
 \subsubsection{Answer 6}
 \label{sec-1-2-5}
+\begin{enumerate}
+\item can be given by: $\aleph_0 = \abs{\{X \in P(\mathbb{N}), n \in 
+       \mathbb{N} | \abs{X} = n\}}$.
+\item $\aleph_0 = \abs{\{X \in P(\mathbb{N}) | \abs{X} =
+       \abs{\mathbb{N}}\}}$.
+\end{enumerate}
 \subsection{Problem 3}
 \label{sec-1-3}
 Find the error in the following:

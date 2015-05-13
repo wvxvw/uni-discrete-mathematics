@@ -1,0 +1,112 @@
+% Created 2015-05-13 Wed 20:52
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage[utf8]{inputenc}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage[backend=bibtex, style=numeric]{biblatex}
+\usepackage{commath}
+\usepackage{tikz}
+\usetikzlibrary{shapes,backgrounds}
+\usepackage{marginnote}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\hypersetup{urlcolor=blue}
+\hypersetup{colorlinks,urlcolor=blue}
+\addbibresource{bibliography.bib}
+\setlength{\parskip}{16pt plus 2pt minus 2pt}
+\definecolor{codebg}{rgb}{0.96,0.99,0.8}
+\definecolor{codestr}{rgb}{0.46,0.09,0.2}
+\author{Oleg Sivokon}
+\date{\textit{<2015-05-13 Wed>}}
+\title{Assignment 14, Discrete Mathematics}
+\hypersetup{
+  pdfkeywords={Discrete Mathematics, Assignment, Relations},
+  pdfsubject={Second asssignment in the course Discrete Mathematics},
+  pdfcreator={Emacs 25.0.50.1 (Org mode 8.2.2)}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\definecolor{codebg}{rgb}{0.96,0.99,0.8}
+\lstnewenvironment{maxima}{%
+  \lstset{backgroundcolor=\color{codebg},
+    aboveskip=20pt,
+    showstringspaces=false,
+    frame=single,
+    framerule=0pt,
+    basicstyle=\ttfamily\scriptsize,
+    columns=fixed}}{}
+}
+\makeatletter
+\newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
+\makeatother
+\verbatimfont{\small}%
+\clearpage
+
+\section{Problems}
+\label{sec-1}
+
+\subsection{Problem 1}
+\label{sec-1-1}
+\begin{enumerate}
+\item Develop the identity $(3 - 2)^n = 1$ using binom of Newton formula:
+\begin{equation*}
+  \sum_{i = 0}^n {?\choose ?} 3^? \cdot (??)^? = 1
+\end{equation*}
+
+And verify the identity for the case $n = 4$.
+\item Let number of ways to distribute $k$ identical balls between 10
+boxes is $D(10, k)$.  Paint three boxes green and the remaining
+seven---red.  Derive:
+\begin{equation*}
+  D(10, k) = \sum_{i = 0}^k ???,
+\end{equation*}
+
+and verify for the case $k = 3$.
+\end{enumerate}
+
+\subsubsection{Answer 1}
+\label{sec-1-1-1}
+\begin{equation*}
+  \sum_{i = 0}^n {i\choose n} 3^i \cdot (-2)^{n - i} = 1.
+\end{equation*}
+
+\textbf{Solution:} \emph{(using Maxima)}
+\begin{maxima}
+n: 4$
+tex(sum(binomial(n, i) * 3^i * (-2)^(n - i), i, 0, n));
+\end{maxima}
+
+$$1$$
+
+\emph{(hand-made)}
+\begin{align*}
+  &\sum_{i = 0}^4 {i\choose 4} 3^i \cdot (-2)^{4 - i} \\
+  &= 1 \cdot 3^0 \cdot (-2)^4 + 4 \cdot 3^1 \cdot (-2)^3 +
+  6 \cdot 3^2 \cdot (-2)^2 + 4 \cdot 3^3 \cdot (-2)^1 +
+  1 \cdot 3^4 \cdot (-2)^0 \\
+  &= 16 - 96 + 216 - 216 + 81 \\
+  &= 1
+\end{align*}
+\subsubsection{Answer 2}
+\label{sec-1-1-2}
+% Emacs 25.0.50.1 (Org mode 8.2.2)
+\end{document}

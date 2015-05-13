@@ -9,7 +9,6 @@
 #+LANGUAGE: en
 #+LaTeX_CLASS: article
 #+LATEX_HEADER: \usepackage[usenames,dvipsnames]{color}
-#+LATEX_HEADER: \usepackage[backend=bibtex, style=numeric]{biblatex}
 #+LATEX_HEADER: \usepackage{commath}
 #+LATEX_HEADER: \usepackage{eufrak}
 #+LATEX_HEADER: \usepackage{tikz}
@@ -20,14 +19,13 @@
 #+LATEX_HEADER: \usepackage{enumerate}
 #+LATEX_HEADER: \hypersetup{urlcolor=blue}
 #+LATEX_HEADER: \hypersetup{colorlinks,urlcolor=blue}
-#+LATEX_HEADER: \addbibresource{bibliography.bib}
 #+LATEX_HEADER: \setlength{\parskip}{16pt plus 2pt minus 2pt}
 #+LATEX_HEADER: \definecolor{codebg}{rgb}{0.96,0.99,0.8}
 #+LATEX_HEADER: \definecolor{codestr}{rgb}{0.46,0.09,0.2}
 
 #+BEGIN_SRC emacs-lisp :exports none
 (setq org-latex-pdf-process
-        '("latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f")
+        '("latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -f %f")
         org-latex-listings t
         org-src-fontify-natively t
         org-babel-latex-htlatex "htlatex")
@@ -66,7 +64,7 @@
 * Problems
 
 ** Problem 1
-   Demonstrate five distinct stes: $A$, $B$, $A \cup B$, $A \oplus B$, $A \setminus B$,
+   Demonstrate five distinct sets: $A$, $B$, $A \cup B$, $A \oplus B$, $A \setminus B$,
    all of which have the same cardinality.
 
 *** Answer 1
@@ -104,14 +102,40 @@
       Write a similar statement for (2) and (4).
 
 *** Answer 2
+    We can construct the set of all subsets of $\mathbb{N}$ by repeating cartesian
+    product $n$ times.  Since $\abs{\mathbb{N} \times \mathbb{N}} = \aleph_0$ so
+    is the $\abs{\mathbb{N}^n} = \aleph_0$ (because $n$ is finite).  Note that
+    the requested sets in this case are given by the resulting ordered pairs.  I.e.
+    $(x_1, (x_2, \hdots (x_{n-1}, x_n) \hdots) \in \mathbb{N}^n$.  In fact, we need
+    only the unique tuples, of which there are even less.
 
 *** Answer 3
+    This continues the argument from [[Answer 2]], but constructs the sets in question
+    using recursive definition: $\bigcup_{i=1}^n \mathbb{N}^i$ since there are
+    no infinte exponents involved in this construction, it must describe a countable
+    set.
 
 *** Answer 4
+    The set of all infinite sets can be described as $\mathbb{N}^{\mathbb{N}}$.
+    We can substitute $\mathbb{N}$ for any infinite subset because any infinite
+    subset of $\mathbb{N}$ is equivalent to $\mathbb{N}$, which follows from
+    definition of infinite set).  Because set exponentiation is non-decreasing
+    in both arguments, this set has cardinality of at least $2^{\mathbb{N}}$,
+    which is the cardinality of the powerset, which, by Cantor's theorem
+    is infinitely larger than any countable set.
 
 *** Answer 5
+    We just stated that the requested set is equivalent to
+    $\mathbb{N}^{\mathbb{N}}$ in [[Answer 4]].  Hence its cardinality is at least
+    $\mathfrak{c}$ and no greater than $2^\mathfrak{c}$.  Assuming (here and
+    through the rest of the answers) continuity hypothesis is true, the
+    cardinality of the set in question is $\mathfrak{c}$.
 
 *** Answer 6
+    2. can be given by: $\aleph_0 = \abs{\{X \in P(\mathbb{N}), n \in 
+       \mathbb{N} | \abs{X} = n\}}$.
+    4. $\aleph_0 = \abs{\{X \in P(\mathbb{N}) | \abs{X} =
+       \abs{\mathbb{N}}\}}$.
 
 ** Problem 3
    Find the error in the following:
