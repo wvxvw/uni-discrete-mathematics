@@ -135,14 +135,14 @@ interleave([X | Xs], Glue, Result) :-
 each(Elt, List, Predicate, Collector, Result) :-
     findall(Collector, (member(Elt, List), Predicate), Result).
 
-build_query(fields(Surname, Name, Midname, Course, Group), Query) :-
-    Fields = [Surname, Name, Midname, Course, Group],
-    query_parts(Parts),
-    tuple(Fields, Parts, Tuples),
-    exclude(exclude_query, Tuples, Filtered),
-    each((X, Y), Filtered, format(atom(Z), Y, [X]), Z, Disjoint),
-    atomic_to_string(Disjoint, ' and ', Query).
-    interleave(Disjoint, ' and ', Query).
+%% build_query(fields(Surname, Name, Midname, Course, Group), Query) :-
+%%     Fields = [Surname, Name, Midname, Course, Group],
+%%     query_parts(Parts),
+%%     tuple(Fields, Parts, Tuples),
+%%     exclude(exclude_query, Tuples, Filtered),
+%%     each((X, Y), Filtered, format(atom(Z), Y, [X]), Z, Disjoint),
+%%     atomic_to_string(Disjoint, ' and ', Query).
+%%     interleave(Disjoint, ' and ', Query).
 
 %% ?- build_query(fields('Kaczynski', 'Ted', false, 'Number Theory', false), Q).
 %% Q = '[surname] LIKE "%Kaczynski%" and [name] LIKE "%Ted%" and course="Number Theory"'.
@@ -159,3 +159,90 @@ mapconcat_helper(Glue, X, Y, Z) :- format(atom(Z), '~p~p~p', [X, Glue, Y]).
 
 mapconcat(List, Glue, Result) :-
     reduce(List, mapconcat_helper(Glue), Result).
+
+select_and_remove([], []).
+select_and_remove(Elements, [E | Rest]) :-
+    select(E, Elements, Elements0),
+    select_and_remove(Elements0, Rest).
+
+is_prefix([], _).
+is_prefix(_, []) :- fail.
+is_prefix([X | Xs], [X | Ys]) :- is_prefix(Xs, Ys).
+
+is_sublist([], _).
+is_sublist(_, []) :- fail.
+is_sublist(Xs, [Y | Ys]) :- is_prefix(Xs, [Y | Ys]) ; is_sublist(Xs, Ys).
+
+not_allowed([a, a, a]).
+not_allowed([b, b]).
+not_allowed([c, c]).
+not_allowed([d, d]).
+
+contains_not_allowed(P) :- not_allowed(Sub), is_sublist(Sub, P).
+
+sans_repetitions(Result) :-
+    findall(X, permutation([a, a, a, b, b, c, c, d, d], X), X),
+    list_to_set(X, Y),
+    exclude(contains_not_allowed, Y, Excluded), 
+    length(Excluded, Result).
+
+feed(Steaks, S, Kebabs, K) :-
+    Steaks in 0..S, Kebabs in 0..K,
+    indomain(Steaks), indomain(Kebabs),
+    Total is Steaks + Kebabs,
+    Total > 0.
+
+feed_four([(S, K), (S1, K1), (S2, K2), (S3, K3)]) :-
+    feed(S, 8, K, 10),
+    Sr is 8 - S, Kr is 10 - K,
+    feed(S1, Sr, K1, Kr),
+    Sr1 is Sr - S1, Kr1 is Kr - K1,
+    feed(S2, Sr1, K2, Kr1),
+    S3 is Sr1 - S2, K3 is Kr1 - K2.
+
+feed_families([(S, K), (S1, K1), (S2, K2), (S3, K3)]) :-
+    Steaks = [S, S1, S2, S3],
+    Kebabs = [K, K1, K2, K3],
+    Steaks ins 0..8, sum(Steaks, #=, 8),
+    Kebabs ins 0..10, sum(Kebabs, #=, 10),
+    append([Steaks, Kebabs], Meals),
+    maplist(indomain, Meals),
+    SK is S + K, SK1 is S1 + K1, SK2 is S2 + K2, SK3 is S3 + K3,
+    SK > 0, SK1 > 0, SK2 > 0, SK3 > 0.
+
+barbecue :-
+    findall(X, feed_families(X), X),
+    length(X, N), 
+    format('$$~p, ~p$$', [N]).
+
+extra(Mask, Elt):- \+ member(Elt, Mask).
+
+barbecue_1(Result) :-
+    findall(X, feed_four(X), X),
+    findall(Y, feed_families(Y), Y),
+    include(extra(Y), X, Result).
+
+%% bs --> [].
+%% bs --> [b], as.
+%% as --> [].
+%% as --> [a], bs.
+
+%% abs --> [].
+%% abs --> [a], bs.
+%% abs --> [b], as.
+
+prefix_allowed(Sofar) :-
+    not_allowed(Bad), is_prefix(Bad, Sofar).
+
+valid_seqence(X, [], X).
+valid_seqence(Sofar, Pool, Result) :-
+    select(E, Pool, Rem), Next = [E | Sofar],
+    \+prefix_allowed(Next),
+    valid_seqence(Next, Rem, Result).
+valid_seqence(X) :-
+    valid_seqence([], [a, a, a, b, b, c, c, d, d], X).
+
+sans_repetitions_2(Result) :-
+    findall(X, valid_seqence(X), X),
+    list_to_set(X, Y),
+    length(Y, Result).

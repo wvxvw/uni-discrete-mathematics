@@ -1,4 +1,4 @@
-% Created 2015-05-13 Wed 20:52
+% Created 2015-05-16 Sat 13:03
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -14,11 +14,11 @@
 \usepackage{marvosym}
 \usepackage{wasysym}
 \usepackage{amssymb}
+\usepackage{capt-of}
 \usepackage{hyperref}
 \tolerance=1000
 \usepackage[utf8]{inputenc}
 \usepackage[usenames,dvipsnames]{color}
-\usepackage[backend=bibtex, style=numeric]{biblatex}
 \usepackage{commath}
 \usepackage{tikz}
 \usetikzlibrary{shapes,backgrounds}
@@ -28,27 +28,51 @@
 \usepackage{enumerate}
 \hypersetup{urlcolor=blue}
 \hypersetup{colorlinks,urlcolor=blue}
-\addbibresource{bibliography.bib}
 \setlength{\parskip}{16pt plus 2pt minus 2pt}
-\definecolor{codebg}{rgb}{0.96,0.99,0.8}
-\definecolor{codestr}{rgb}{0.46,0.09,0.2}
+\renewcommand{\arraystretch}{1.6}
 \author{Oleg Sivokon}
 \date{\textit{<2015-05-13 Wed>}}
 \title{Assignment 14, Discrete Mathematics}
 \hypersetup{
-  pdfkeywords={Discrete Mathematics, Assignment, Relations},
-  pdfsubject={Second asssignment in the course Discrete Mathematics},
-  pdfcreator={Emacs 25.0.50.1 (Org mode 8.2.2)}}
+ pdfauthor={Oleg Sivokon},
+ pdftitle={Assignment 14, Discrete Mathematics},
+ pdfkeywords={Discrete Mathematics, Assignment, Relations},
+ pdfsubject={Second asssignment in the course Discrete Mathematics},
+ pdfcreator={Emacs 25.0.50.1 (Org mode 8.3beta)}, 
+ pdflang={English}}
 \begin{document}
 
 \maketitle
 \tableofcontents
 
-
 \definecolor{codebg}{rgb}{0.96,0.99,0.8}
+\definecolor{codestr}{rgb}{0.46,0.09,0.2}
+\lstset{%
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\scriptsize,
+  breakatwhitespace=false,
+  breaklines=false,
+  captionpos=b,
+  framexleftmargin=10pt,
+  xleftmargin=10pt,
+  framerule=0pt,
+  frame=tb,
+  keepspaces=true,
+  keywordstyle=\color{blue},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{codestr},
+  tabsize=2
+}
 \lstnewenvironment{maxima}{%
-  \lstset{backgroundcolor=\color{codebg},
+  \lstset{%
+    backgroundcolor=\color{codebg},
+    escapeinside={(*@}{@*)},
     aboveskip=20pt,
+    captionpos=b,
+    label=,
+    caption=,
     showstringspaces=false,
     frame=single,
     framerule=0pt,
@@ -62,40 +86,42 @@
 \clearpage
 
 \section{Problems}
-\label{sec-1}
+\label{sec:orgheadline8}
 
 \subsection{Problem 1}
-\label{sec-1-1}
+\label{sec:orgheadline3}
 \begin{enumerate}
-\item Develop the identity $(3 - 2)^n = 1$ using binom of Newton formula:
+\item Develop the identity \((3 - 2)^n = 1\) using binom of Newton formula:
 \begin{equation*}
   \sum_{i = 0}^n {?\choose ?} 3^? \cdot (??)^? = 1
 \end{equation*}
 
-And verify the identity for the case $n = 4$.
-\item Let number of ways to distribute $k$ identical balls between 10
-boxes is $D(10, k)$.  Paint three boxes green and the remaining
+And verify the identity for the case \(n = 4\).
+\item Let number of ways to distribute \(k\) identical balls between 10
+boxes is \(D(10, k)\).  Paint three boxes green and the remaining
 seven---red.  Derive:
 \begin{equation*}
   D(10, k) = \sum_{i = 0}^k ???,
 \end{equation*}
 
-and verify for the case $k = 3$.
+and verify for the case \(k = 3\).
 \end{enumerate}
 
 \subsubsection{Answer 1}
-\label{sec-1-1-1}
+\label{sec:orgheadline1}
 \begin{equation*}
   \sum_{i = 0}^n {i\choose n} 3^i \cdot (-2)^{n - i} = 1.
 \end{equation*}
 
 \textbf{Solution:} \emph{(using Maxima)}
 \begin{maxima}
-n: 4$
+n: 4;
 tex(sum(binomial(n, i) * 3^i * (-2)^(n - i), i, 0, n));
+(*@\label{orgsrcblock1}
+@*)
 \end{maxima}
 
-$$1$$
+\(1\)
 
 \emph{(hand-made)}
 \begin{align*}
@@ -106,7 +132,118 @@ $$1$$
   &= 16 - 96 + 216 - 216 + 81 \\
   &= 1
 \end{align*}
+
 \subsubsection{Answer 2}
-\label{sec-1-1-2}
-% Emacs 25.0.50.1 (Org mode 8.2.2)
+\label{sec:orgheadline2}
+
+
+\subsection{Prolbem 2}
+\label{sec:orgheadline5}
+How many permutations of a string \(AAABBCCDD\) can you form s.t. they
+don't contain subsequences \(AAA\), \(BB\), \(CC\) or \(DD\)?
+
+\subsubsection{Answer 3}
+\label{sec:orgheadline4}
+The total number of ways in which we can arrange the sequence \(AAABBCCDD\) is
+\(n(\Omega)=\frac{9!}{3!2!2!2!}=7560\).  Then we find all permutations which
+contain sequences of consequtive letters, \(AAA\), \(BB\) and so on.
+
+\begin{align*}
+\frac{9!}{3!2!^3} &
+- \left(\frac{7!}{2!^3}       + 3\cdot\frac{8!}{3!2!^2}\right)
++ \left(3\cdot\frac{6!}{2!^2} + 3\cdot\frac{7!}{3!2!}\right)
+- \left(3\cdot\frac{5!}{2!}   + \frac{6!}{3!}\right)
++ 4! \\
+&= 7560 - (630 + 5040) + (540 + 1260) - (180 + 120) + 24 \\
+&= 3414\;.
+\end{align*}
+
+We count in stages: first we find all permutations of the string containing
+\(AAA\) or duplicated characters, divided by the internal orderings of the
+remaining duplicates.  Some of these permuations will also intersect with
+each other, thus, we want to subtract duplicates such as \(AAA \cup BB\), but
+now we subtracted some of the duplicates twice, so we need to add them back.
+Those which we counted twice are those containing three subsequences, and so
+on.  Finally:
+
+\lstset{language=prolog,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+is_prefix([], _).
+is_prefix(_, []) :- fail.
+is_prefix([X | Xs], [X | Ys]) :- is_prefix(Xs, Ys).
+
+not_allowed([a, a, a]).
+not_allowed([b, b]).
+not_allowed([c, c]).
+not_allowed([d, d]).
+
+prefix_allowed(Sofar) :-
+    not_allowed(Bad), is_prefix(Bad, Sofar).
+
+valid_seqence(X, [], X).
+valid_seqence(Sofar, Pool, Result) :-
+    select(E, Pool, Rem), Next = [E | Sofar],
+    \+prefix_allowed(Next),
+    valid_seqence(Next, Rem, Result).
+valid_seqence(X) :-
+    valid_seqence([], [a, a, a, b, b, c, c, d, d], X).
+
+sans_repetitions :-
+    findall(X, valid_seqence(X), X),
+    list_to_set(X, Y),
+    length(Y, Result),
+    format('$$~p$$', [Result]).
+\end{lstlisting}
+
+\(3414\)
+
+\subsection{Problem 3}
+\label{sec:orgheadline7}
+Four families (all distinct) went out to barbecue.  They took 8 steaks and 10
+kebabs.  In how many ways is it possible to distribute the food to the
+families, while every family has to have at least one meal?
+
+\subsubsection{Answer 4}
+\label{sec:orgheadline6}
+We can distribute all meals in the following way:
+
+\begin{center}
+\begin{tabular}{rrlrrl}
+i(S) & i(K) & i(O) & r(S) & r(K) & r(O)\\
+\hline
+4 & 0 & \({0\choose 4}=1\) & 4 & 10 & \({4\choose 14}=1001\)\\
+3 & 1 & \({1\choose 4}=4\) & 5 & 9 & \({5\choose 14}=2002\)\\
+2 & 2 & \({2\choose 4}=6\) & 6 & 8 & \({6\choose 14}=3003\)\\
+1 & 3 & \({1\choose 4}=4\) & 7 & 9 & \({7\choose 14}=3432\)\\
+0 & 4 & \({0\choose 4}=1\) & 8 & 8 & \({8\choose 14}=3003\)\\
+\hline
+ &  & \(2^4=16\) &  &  & 43758\\
+\end{tabular}
+\end{center}
+
+\(i(X)\) stands for how many meals were distributed \emph{initially}.  \(r(X)\)
+stands for \emph{remaining} meals.  \(S\) stands for \emph{steaks}, \(K\) stands for
+\emph{kebabs}, \(O\) stands for \emph{orderings}.
+
+\lstset{language=prolog,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+:- use_module(library(clpfd)).
+
+feed_families([(S, K), (S1, K1), (S2, K2), (S3, K3)]) :-
+    Steaks = [S, S1, S2, S3],
+    Kebabs = [K, K1, K2, K3],
+    Steaks ins 0..8, sum(Steaks, #=, 8),
+    Kebabs ins 0..10, sum(Kebabs, #=, 10),
+    append([Steaks, Kebabs], Meals),
+    maplist(indomain, Meals),
+    Total is (S + K) * (S1 + K1) * (S2 + K2) * (S3 + K3),
+    Total > 0.
+
+barbecue :-
+    findall(X, feed_families(X), X),
+    length(X, Result),
+    format('$$~p$$', [Result]).
+\end{lstlisting}
+
+\(35900\)
 \end{document}

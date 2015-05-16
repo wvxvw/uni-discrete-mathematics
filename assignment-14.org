@@ -9,7 +9,6 @@
 #+LANGUAGE: en
 #+LaTeX_CLASS: article
 #+LATEX_HEADER: \usepackage[usenames,dvipsnames]{color}
-#+LATEX_HEADER: \usepackage[backend=bibtex, style=numeric]{biblatex}
 #+LATEX_HEADER: \usepackage{commath}
 #+LATEX_HEADER: \usepackage{tikz}
 #+LATEX_HEADER: \usetikzlibrary{shapes,backgrounds}
@@ -19,17 +18,16 @@
 #+LATEX_HEADER: \usepackage{enumerate}
 #+LATEX_HEADER: \hypersetup{urlcolor=blue}
 #+LATEX_HEADER: \hypersetup{colorlinks,urlcolor=blue}
-#+LATEX_HEADER: \addbibresource{bibliography.bib}
 #+LATEX_HEADER: \setlength{\parskip}{16pt plus 2pt minus 2pt}
-#+LATEX_HEADER: \definecolor{codebg}{rgb}{0.96,0.99,0.8}
-#+LATEX_HEADER: \definecolor{codestr}{rgb}{0.46,0.09,0.2}
+#+LATEX_HEADER: \renewcommand{\arraystretch}{1.6}
 
 #+BEGIN_SRC emacs-lisp :exports none
   (setq org-latex-pdf-process
-          '("latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f")
+          '("latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -f %f")
           org-latex-listings t
           org-src-fontify-natively t
           org-latex-custom-lang-environments '((maxima "maxima"))
+          org-listings-escape-inside '("(*@" . "@*)")
           org-babel-latex-htlatex "htlatex")
   (defmacro by-backend (&rest body)
       `(cl-case (when (boundp 'backend) (org-export-backend-name backend))
@@ -40,21 +38,45 @@
 : by-backend
 
 #+BEGIN_LATEX
-  \definecolor{codebg}{rgb}{0.96,0.99,0.8}
-  \lstnewenvironment{maxima}{%
-    \lstset{backgroundcolor=\color{codebg},
-      aboveskip=20pt,
-      showstringspaces=false,
-      frame=single,
-      framerule=0pt,
-      basicstyle=\ttfamily\scriptsize,
-      columns=fixed}}{}
-  }
-  \makeatletter
-  \newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
-  \makeatother
-  \verbatimfont{\small}%
-  \clearpage
+\definecolor{codebg}{rgb}{0.96,0.99,0.8}
+\definecolor{codestr}{rgb}{0.46,0.09,0.2}
+\lstset{%
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\scriptsize,
+  breakatwhitespace=false,
+  breaklines=false,
+  captionpos=b,
+  framexleftmargin=10pt,
+  xleftmargin=10pt,
+  framerule=0pt,
+  frame=tb,
+  keepspaces=true,
+  keywordstyle=\color{blue},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{codestr},
+  tabsize=2
+}
+\lstnewenvironment{maxima}{%
+  \lstset{%
+    backgroundcolor=\color{codebg},
+    escapeinside={(*@}{@*)},
+    aboveskip=20pt,
+    captionpos=b,
+    label=,
+    caption=,
+    showstringspaces=false,
+    frame=single,
+    framerule=0pt,
+    basicstyle=\ttfamily\scriptsize,
+    columns=fixed}}{}
+}
+\makeatletter
+\newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
+\makeatother
+\verbatimfont{\small}%
+\clearpage
 #+END_LATEX
 
 * Problems
@@ -93,9 +115,10 @@
     #+NAME: prob3
     #+HEADER: :exports both
     #+BEGIN_SRC maxima :results output raw
-      n: 4$
+      n: 4;
       tex(sum(binomial(n, i) * 3^i * (-2)^(n - i), i, 0, n));
     #+END_SRC
+
     /(hand-made)/
     #+HEADER: :exports results
     #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
@@ -112,4 +135,115 @@
 
 *** Answer 2
     
+
+** Prolbem 2
+   How many permutations of a string $AAABBCCDD$ can you form s.t. they
+   don't contain subsequences $AAA$, $BB$, $CC$ or $DD$?
+   
+*** Answer 3
+    The total number of ways in which we can arrange the sequence $AAABBCCDD$ is
+    $n(\Omega)=\frac{9!}{3!2!2!2!}=7560$.  Then we find all permutations which
+    contain sequences of consequtive letters, $AAA$, $BB$ and so on.
+
+    #+HEADER: :exports results
+    #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
+    #+BEGIN_SRC latex
+      \begin{align*}
+      \frac{9!}{3!2!^3} &
+      - \left(\frac{7!}{2!^3}       + 3\cdot\frac{8!}{3!2!^2}\right)
+      + \left(3\cdot\frac{6!}{2!^2} + 3\cdot\frac{7!}{3!2!}\right)
+      - \left(3\cdot\frac{5!}{2!}   + \frac{6!}{3!}\right)
+      + 4! \\
+      &= 7560 - (630 + 5040) + (540 + 1260) - (180 + 120) + 24 \\
+      &= 3414\;.
+      \end{align*}
+    #+END_SRC
+
+    We count in stages: first we find all permutations of the string containing
+    $AAA$ or duplicated characters, divided by the internal orderings of the
+    remaining duplicates.  Some of these permuations will also intersect with
+    each other, thus, we want to subtract duplicates such as $AAA \cup BB$, but
+    now we subtracted some of the duplicates twice, so we need to add them back.
+    Those which we counted twice are those containing three subsequences, and so
+    on.  Finally:
+    
+    #+HEADER: :system swipl :exports source :results raw
+    #+HEADER: :goal sans_repetitions.
+    #+BEGIN_SRC prolog
+      is_prefix([], _).
+      is_prefix(_, []) :- fail.
+      is_prefix([X | Xs], [X | Ys]) :- is_prefix(Xs, Ys).
+
+      not_allowed([a, a, a]).
+      not_allowed([b, b]).
+      not_allowed([c, c]).
+      not_allowed([d, d]).
+
+      prefix_allowed(Sofar) :-
+          not_allowed(Bad), is_prefix(Bad, Sofar).
+
+      valid_seqence(X, [], X).
+      valid_seqence(Sofar, Pool, Result) :-
+          select(E, Pool, Rem), Next = [E | Sofar],
+          \+prefix_allowed(Next),
+          valid_seqence(Next, Rem, Result).
+      valid_seqence(X) :-
+          valid_seqence([], [a, a, a, b, b, c, c, d, d], X).
+
+      sans_repetitions :-
+          findall(X, valid_seqence(X), X),
+          list_to_set(X, Y),
+          length(Y, Result),
+          format('$$~p$$', [Result]).
+    #+END_SRC
+
+    #+RESULTS:
+    $$3414$$
+
+** Problem 3
+   Four families (all distinct) went out to barbecue.  They took 8 steaks and 10
+   kebabs.  In how many ways is it possible to distribute the food to the
+   families, while every family has to have at least one meal?
+
+*** Answer 4
+    We can distribute all meals in the following way:
+
+    #+ATTR_LATEX: :mode table
+    | i(S) | i(K) | i(O)             | r(S) | r(K) | r(O)                 |
+    |------+------+------------------+------+------+----------------------|
+    |    4 |    0 | ${0\choose 4}=1$ |    4 |   10 | ${4\choose 14}=1001$ |
+    |    3 |    1 | ${1\choose 4}=4$ |    5 |    9 | ${5\choose 14}=2002$ |
+    |    2 |    2 | ${2\choose 4}=6$ |    6 |    8 | ${6\choose 14}=3003$ |
+    |    1 |    3 | ${1\choose 4}=4$ |    7 |    9 | ${7\choose 14}=3432$ |
+    |    0 |    4 | ${0\choose 4}=1$ |    8 |    8 | ${8\choose 14}=3003$ |
+    |------+------+------------------+------+------+----------------------|
+    |      |      | $2^4=16$         |      |      | 43758                |
+
+    $i(X)$ stands for how many meals were distributed /initially/.  $r(X)$
+    stands for /remaining/ meals.  $S$ stands for /steaks/, $K$ stands for
+    /kebabs/, $O$ stands for /orderings/.
+
+    #+HEADER: :system swipl :exports source :results raw
+    #+HEADER: :goal barbecue.
+    #+BEGIN_SRC prolog
+      :- use_module(library(clpfd)).
+
+      feed_families([(S, K), (S1, K1), (S2, K2), (S3, K3)]) :-
+          Steaks = [S, S1, S2, S3],
+          Kebabs = [K, K1, K2, K3],
+          Steaks ins 0..8, sum(Steaks, #=, 8),
+          Kebabs ins 0..10, sum(Kebabs, #=, 10),
+          append([Steaks, Kebabs], Meals),
+          maplist(indomain, Meals),
+          Total is (S + K) * (S1 + K1) * (S2 + K2) * (S3 + K3),
+          Total > 0.
+
+      barbecue :-
+          findall(X, feed_families(X), X),
+          length(X, Result),
+          format('$$~p$$', [Result]).
+    #+END_SRC
+
+    #+RESULTS:
+    $$35900$$
 
