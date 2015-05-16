@@ -246,3 +246,42 @@ sans_repetitions_2(Result) :-
     findall(X, valid_seqence(X), X),
     list_to_set(X, Y),
     length(Y, Result).
+
+distribute_to_four(Meals, [A, B, C, D]) :-
+    Families = [A, B, C, D],
+    Families ins 0..Meals, sum(Families, #=, Meals),
+    maplist(indomain, Families).
+
+distribute_to_five(Meals, [A, B, C, D, E]) :-
+    Families = [A, B, C, D, E],
+    Families ins 0..Meals, sum(Families, #=, Meals),
+    maplist(indomain, Families).
+
+distribute_to_four_must(Meals, [A, B, C, D]) :-
+    Families = [A, B, C, D],
+    Families ins 1..Meals, sum(Families, #=, Meals),
+    maplist(indomain, Families).
+
+distribute_to_three(Meals, [A, B, C]) :-
+    Families = [A, B, C],
+    Families ins 0..Meals, sum(Families, #=, Meals),
+    maplist(indomain, Families).
+
+distribute_to_two(Meals, [A, B]) :-
+    Families = [A, B],
+    Families ins 0..Meals, sum(Families, #=, Meals),
+    maplist(indomain, Families).
+
+%% plus(A, B, C) :- C is A + B.
+two_sums([], A, B, A, B) :-
+    foldl(plus, A, 0, As),
+    foldl(plus, B, 0, Bs),
+    As = Bs.
+
+two_sums(Numbers, A, B, C, D) :-
+    select(N, Numbers, Rest),
+    (two_sums(Rest, [N | A], B, C, D) ;
+     two_sums(Rest, A, [N | B], C, D)).
+
+two_sums(Numbers, A, B) :-
+    two_sums(Numbers, [], [], A, B).
