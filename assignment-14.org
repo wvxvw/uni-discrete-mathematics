@@ -4,7 +4,7 @@
 #+AUTHOR:    Oleg Sivokon
 #+EMAIL:     olegsivokon@gmail.com
 #+DATE:      <2015-05-13 Wed>
-#+DESCRIPTION: Second asssignment in the course Discrete Mathematics
+#+DESCRIPTION: Second assignment in the course Discrete Mathematics
 #+KEYWORDS: Discrete Mathematics, Assignment, Relations
 #+LANGUAGE: en
 #+LaTeX_CLASS: article
@@ -138,12 +138,12 @@
 
 ** Prolbem 2
    How many permutations of a string $AAABBCCDD$ can you form s.t. they
-   don't contain subsequences $AAA$, $BB$, $CC$ or $DD$?
+   don't contain sub-sequences $AAA$, $BB$, $CC$ or $DD$?
    
 *** Answer 3
     The total number of ways in which we can arrange the sequence $AAABBCCDD$ is
     $n(\Omega)=\frac{9!}{3!2!2!2!}=7560$.  Then we find all permutations which
-    contain sequences of consequtive letters, $AAA$, $BB$ and so on.
+    contain sequences of consecutive letters, $AAA$, $BB$ and so on.
 
     #+HEADER: :exports results
     #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
@@ -161,10 +161,10 @@
 
     We count in stages: first we find all permutations of the string containing
     $AAA$ or duplicated characters, divided by the internal orderings of the
-    remaining duplicates.  Some of these permuations will also intersect with
+    remaining duplicates.  Some of these permutations will also intersect with
     each other, thus, we want to subtract duplicates such as $AAA \cup BB$, but
     now we subtracted some of the duplicates twice, so we need to add them back.
-    Those which we counted twice are those containing three subsequences, and so
+    Those which we counted twice are those containing three sub-sequences, and so
     on.  Finally:
     
     #+HEADER: :system swipl :exports source :results raw
@@ -211,7 +211,7 @@
     ${10 + 4 - 1\choose 10}\cdot{8 + 4 - 1\choose 8}$.  Now, we need to subtract
     the combinations where at least one family didn't get any food, add combinations,
     where at least two families didn't get any food and subtract the combinations
-    where three familiies didn't get any food.
+    where three families didn't get any food.
     #+HEADER: :exports results
     #+HEADER: :results (by-backend (pdf "latex") (t "raw"))
     #+BEGIN_SRC latex
@@ -252,12 +252,18 @@
 ** Problem 4
    Rami and Dina play a game where Dina selects 8 numbers in the $10 \leq n \leq
    36$ range.  Rami has to find a way to form two sums from the numbers Dina
-   selected.
+   selected.  The conditions for Rami are that he can use anywhere from 1 to
+   8 distinct numbers to form the sum.  The numbers themselves, however, can
+   repeat in the other sum.
 
 *** Answer 5
-    Dina can select seven even numbers (there are $(36 - 10) / 2 = 8$ such
-    numbers), and one odd number.  It wouldn't be possible to create two sums
-    from these numbers because adding odd numbers to even numbers must result in
-    an odd number, but since we have only one such number, we can't form an
-    equality involving that number.  Hence, an example of such set would be:
-    $\{10, 12, 14, 16, 18, 20, 22, 23\}$.
+    The number of sums one can form from numbers in the range $[10, 36]$ is
+    $\sum_{n=36}^28 n - 10 + 1 = 260 - 9 = 254$.  Now, if we can compute the
+    number of combinations we can form from 8 numbers and establish that the
+    number is larger than $254 \times 2 = 508$, then we showed (by pigeonhole
+    principle) that we can indeed produce two required sums (Rami has a winning
+    strategy).  The number of combinations we are talking about is the
+    cardinality of the power-set of cardinality 8.  Let $A$ be the set of
+    numbers selected by Dina, then $\abs{P(A)} = 2^{\abs{A}} = 2^8 = 256$.
+    Since $256 > 254$ it follows that there will always be a sum produced by
+    at least two subsets of the numbers selected by Dina.

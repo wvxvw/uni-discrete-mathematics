@@ -285,3 +285,41 @@ two_sums(Numbers, A, B, C, D) :-
 
 two_sums(Numbers, A, B) :-
     two_sums(Numbers, [], [], A, B).
+
+split_in_two([], X, Y, X, Y).
+split_in_two(In, IA, IB, OA, OB) :-
+    select(E, In, Out),
+    (split_in_two(Out, [E | IA], IB, OA, OB);
+     split_in_two(Out, IA, [E | IB], OA, OB)).
+split_in_two(In, A, B) :-
+    split_in_two(In, [], [], OA, OB),
+    sort(OA, A), sort(OB, B).
+
+combination([], [[]]).
+combination([I | In], Out) :-
+    combination(In, OutRest),
+    maplist(append([I]), OutRest, OutInterim),
+    append(OutRest, OutInterim, Out).
+
+combinations(In, Out) :-
+    findall(X, combination(In, X), X), X = [Out].
+
+two_partition(In, A, B) :-
+    combinations(In, A),
+    maplist(ord_subtract(In), A, B).
+
+format_sum([], 0).
+format_sum([X], X).
+format_sum([X | Xs], X+Exp) :-
+    format_sum(Xs, Exp).
+
+sums_equation(A, B, [Af, Bf]) :-
+    format_sum(A, Af),
+    format_sum(B, Bf).
+
+sums_equal([L, R]) :- X is L, Y is R, X is Y.
+
+rami_sum(Numbers, Sums) :-
+    two_partition(Numbers, A, B),
+    maplist(sums_equation, A, B, C),
+    include(sums_equal, C, Sums).
