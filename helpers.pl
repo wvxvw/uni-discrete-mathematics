@@ -323,3 +323,16 @@ rami_sum(Numbers, Sums) :-
     two_partition(Numbers, A, B),
     maplist(sums_equation, A, B, C),
     include(sums_equal, C, Sums).
+
+even(N) :- 0 is N mod 2.
+
+assignment_5_2_helper(Unknowns) :-
+    length(Unknowns, 5),
+    Unknowns ins 2..24, sum(Unknowns, #=, 24),
+    maplist(indomain, Unknowns),
+    include(even, Unknowns, Evens),
+    length(Evens, 3).
+
+assignment_5_2(N) :-
+    findall(X, assignment_5_2_helper(X), X),
+    length(X, N).

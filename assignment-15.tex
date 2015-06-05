@@ -1,0 +1,294 @@
+% Created 2015-06-05 Fri 12:54
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage[utf8]{inputenc}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{commath}
+\usepackage{tikz}
+\usetikzlibrary{shapes,backgrounds}
+\usepackage{marginnote}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\hypersetup{urlcolor=blue}
+\hypersetup{colorlinks,urlcolor=blue}
+\setlength{\parskip}{16pt plus 2pt minus 2pt}
+\renewcommand{\arraystretch}{1.6}
+\author{Oleg Sivokon}
+\date{\textit{<2015-06-01 Mon>}}
+\title{Assignment 15, Discrete Mathematics}
+\hypersetup{
+ pdfauthor={Oleg Sivokon},
+ pdftitle={Assignment 15, Discrete Mathematics},
+ pdfkeywords={Discrete Mathematics, Assignment, Relations},
+ pdfsubject={Second assignment in the course Discrete Mathematics},
+ pdfcreator={Emacs 25.0.50.1 (Org mode 8.3beta)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\definecolor{codebg}{rgb}{0.96,0.99,0.8}
+\definecolor{codestr}{rgb}{0.46,0.09,0.2}
+\lstset{%
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\scriptsize,
+  breakatwhitespace=false,
+  breaklines=false,
+  captionpos=b,
+  framexleftmargin=10pt,
+  xleftmargin=10pt,
+  framerule=0pt,
+  frame=tb,
+  keepspaces=true,
+  keywordstyle=\color{blue},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  stringstyle=\color{codestr},
+  tabsize=2
+}
+\lstnewenvironment{maxima}{%
+  \lstset{%
+    backgroundcolor=\color{codebg},
+    escapeinside={(*@}{@*)},
+    aboveskip=20pt,
+    captionpos=b,
+    label=,
+    caption=,
+    showstringspaces=false,
+    frame=single,
+    framerule=0pt,
+    basicstyle=\ttfamily\scriptsize,
+    columns=fixed}}{}
+}
+\makeatletter
+\newcommand{\verbatimfont}[1]{\renewcommand{\verbatim@font}{\ttfamily#1}}
+\makeatother
+\verbatimfont{\small}%
+\clearpage
+
+\section{Problems}
+\label{sec:orgheadline11}
+
+\subsection{Problem 1}
+\label{sec:orgheadline3}
+Given the alphabet \(\{0, 1, 2\}\) and the grammar rules which disallow
+sequences \(\langle 00 \rangle\) and \(\langle 01 \rangle\) of the sequence
+\(\{a_n\}\) which counts the possible products of the grammar:
+\begin{enumerate}
+\item Write \(a_0, a_1, a_2\), write recursive definition of the sequence.
+\item Find a closed-form solution for \(\{a_n\}\).
+\end{enumerate}
+
+\subsubsection{Answer 1}
+\label{sec:orgheadline1}
+\begin{itemize}
+\item \(a_0\) is the number of sequences of zero length, there's only one
+such sequence.
+\item \(a_1\) is the number of sequences of length one, there's exactly three
+such sequences: \(\langle 0 \rangle\), \(\langle 1 \rangle\), \(\langle 2
+      \rangle\).
+\item \(a_2\) is the number of sequences of length two, here, for the first
+time we encounter the restrictions imposed by the grammar.  Without
+restriction, the number of sequences possible to form from an alphabet
+of size 3 is \(3^2=9\), since two of these are not allowed, the total
+number of sequences we can form is 7.
+\end{itemize}
+
+Now, let's construct the recursive definition.  Consider these two cases:
+either the first element of the sequence is 2, or not.  If it is 2, then our
+grammar doesn't restrict us, thus the number of possible grammar products is
+to be \(a_{n-1}\).  Conversely, when the first number is either 0 or 1, the
+further products can be only selected in a way that they don't contain zero,
+i.e. there are only two possible ways to continue the sequence, which gives
+us \(2 \cdot 2 a_{n-2}\).
+
+In conclusion, the recursive definition is \(a_n = a_{n-1} + 4a_{n-2}\).
+Verifying:
+\begin{align*}
+  a_0 &= 1 \\
+  a_1 &= 3 \\
+  a_2 &= a_1 + 4a_0 = 3 + 4 \cdot 1 = 7\;.
+\end{align*}
+
+\subsubsection{Answer 2}
+\label{sec:orgheadline2}
+In order to find the closed form solution, let's assume there exists
+\(\lambda\) s.t. \(a_n = \lambda^n\).  Substituting our assumption back into
+recursive formula gives:
+\begin{align*}
+  \lambda^n &= \lambda^{n-1} + 4\lambda^{n-2} &\iff \\
+  \lambda^2 &= \lambda + 4                   &\iff \\
+  \lambda^2 &- \lambda - 4 = 0               &\iff \\
+  \lambda   &= \frac{-1 \pm \sqrt{1^2 - 4 \cdot (-4) \cdot 1}}{2 \cdot 1} \\
+            &= \frac{-1 \pm \sqrt{17}}{2}\;.
+\end{align*}
+
+From here we see that there are two different terms contributing to the
+function defining the sequence.  Lets denote the contribution these terms
+make to the value as \(\alpha\) and \(\beta\).  Thus:
+\begin{align*}
+  a_n &= \alpha \frac{-1 + \sqrt{17}}{2} + \beta \frac{-1 - \sqrt{17}}{2} \\
+      &\alpha + 4 \beta = 0 \\
+      &\alpha \frac{-1 + \sqrt{17}}{2} + 4 \beta \frac{-1 - \sqrt{17}}{2} = 3\;. \\
+\end{align*}
+
+Solving these simultaneous equations gives: \(\alpha = -3, \beta = -\frac{3}{4}\).
+Hence, the direct formula is:
+\begin{align*}
+  a_n &= 3 \left(\frac{-1 - \sqrt{17}}{2}\right)^n - 
+  \frac{3}{4}\left(\frac{-1 + \sqrt{17}}{2}\right)^n\;.
+\end{align*}
+
+\subsection{Problem 2}
+\label{sec:orgheadline5}
+Find the number of solutions for \(x_1 + x_2 + x_3 + x_4 + x_5 = 24\)
+provided two of the unknowns are odd natural numbers, the rest are even
+natural numbers and neither unknown is equal to 0 or 1.
+
+\subsubsection{Answer 3}
+\label{sec:orgheadline4}
+First, a simple way of counting the solutions.  We must deal at least a 3 to
+two of the unknows and 2 to the other 3 of the unknowns.  This gives us \(2
+    \cdot 3 + 3 \cdot 2\) of ``mandatory allocations''.  After these have been
+allocated, we must distribute the remaining 12, but we can only distribute
+it in pairs, so, all in all we end up with \({6 + 5 - 1 \choose 6} = 210\)
+ways to allocate the ``points''.  Having done this, we count the number of
+ways the solutions can be permuted: \(\frac{5!}{2!3!}=10\).  Hence, the final
+answer, the number of solutions to the equation \(x_1 + x_2 + x_3 + x_4 + x_5
+    = 24\) is \(10 \cdot 210 = 2100\).
+
+The code to verify our calculations:
+\lstset{language=prolog,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+:- use_module(library(clpfd)).
+
+even(N) :- 0 is N mod 2.
+
+assignment_5_2_helper(Unknowns) :-
+    length(Unknowns, 5),
+    Unknowns ins 2..24, sum(Unknowns, #=, 24),
+    maplist(indomain, Unknowns),
+    include(even, Unknowns, Evens),
+    length(Evens, 3).
+
+assignment_5_2 :-
+    findall(X, assignment_5_2_helper(X), X),
+    length(X, N),
+    format('$$~p$$', [N]).
+\end{lstlisting}
+
+\(2100\)
+
+To find what a generating function for this would look like we consider the
+two groups of factors: the odd and the even ones.  Odd will contribute two
+factors and even will contribute three, thus we have \(Odds^2 \cdot Evens^3\).
+Now, odd factors can be written as \(x^3 + x^5 + x^7 + \hdots\) and, similarly
+even factors are \(x^2 + x^4 + x^6 + \hdots\).  From the argument above we
+know that there are 10 ways to arrange the unknowns, thus the final formula
+for generating function is \(G(x) = 10(x^3 + x^5 + x^7 + \hdots)^2 (x^2 + x^4 +
+    x^6 + \hdots)^3\).  The solution is given by the coefficient of \(x^{24}\).
+Applying the following transformations:
+\begin{align*}
+  G(x) &= 10(x^3 + x^5 + x^7 + \hdots)^2 (x^2 + x^4 + x^6 + \hdots)^3 \\
+       &= 10x^2(x^2 + x^4 + x^6 + \hdots)^2 (x^2 + x^4 + x^6 + \hdots)^3 \\
+       &= 10x^2(x^2 + x^4 + x^6 + \hdots)^5 \\
+       &= 10x^7(1 + x^2 + x^4 + \hdots)^5 \\
+       &= \frac{10x^7}{(1 - x^2)^5} \\
+       &= {-5 \choose 0} + {-5 \choose 1}10x^7 - {-5 \choose 2}10x^8 + \hdots
+\end{align*}
+
+We need the sixth term of these series, i.e. \({-5 \choose 6} = {5 + 6 - 1
+   \choose 6} = 210\), multiplied by 10 (number of arrangements) gives the same
+answer: 2100.
+
+\subsection{Problem 3}
+\label{sec:orgheadline8}
+Joshua has to take pills:
+\begin{itemize}
+\item Against headache---at most 3 per day.
+\item Energy pill---at most 3 per day.
+\item Vitamin C---no restriction.
+\item Vitamin B---no restriction.
+\end{itemize}
+
+Joshua is also required to take exactly \(n\) pills each day.  Let \(a_n\)
+be the number of ways the pills can be combined.
+
+\begin{enumerate}
+\item Find a generating function for \(a_n\).
+\item Find a closed-form formula for \(a_n\).
+\end{enumerate}
+
+\subsubsection{Answer 4}
+\label{sec:orgheadline6}
+We can create terms of the generating function in the following way: Since
+Joshua has to take either no pills against headache, one, two or three, this
+kind of pill will contribute the term \((1 + x + x^2 + x^3)\).  Similarly,
+the energy pill.  Vitamins will contribute infinite sum terms:
+\((1 + x + x^2 + x^3 + \hdots)\).  Cobining all together gives:
+\(G(x) = (1 + x + x^2 + x^3)^2(1 + x + x^2 + x^3 + \hdots)^2\).
+
+\subsubsection{Answer 5}
+\label{sec:orgheadline7}
+To find the closed-form formula for \(G(x)\) we can use the following identities:
+\begin{align*}
+  (1 + x + x^2 + x^3) &= \frac{1 - x^4}{1 - x} \\
+  (1 + x + x^2 + x^3 + \hdots) &= \frac{1}{1 - x}
+\end{align*}
+
+Thus we can rewrite \(G\) as:
+\begin{align*}
+  G(x) &= \left(\frac{1 - x^4}{1 - x}\right)^2 \cdot \left(\frac{1}{1 - x}\right)^2 \\
+       &= \frac{(1 - x^4)^2 \cdot (1 - x)^2}{(1 - x)^2} \\
+       &= (1 - x^4)^2\;.
+\end{align*}
+
+\subsection{Problem 4}
+\label{sec:orgheadline10}
+Find the coefficient of \(x^{2m}\) in both sides of the following identity.
+\begin{align*}
+  \frac{(1 - x^2)^n}{(1 - x)^n} = (1 + x)^n\;.
+\end{align*}
+
+From this, derive the following idenity:
+\begin{align*}
+  \sum_{k=0}^? ?? = {n \choose 2m}\;.
+\end{align*}
+
+Verify the answer for the assignments: \(n = 5, m = 2\) and \(n = 5, m = 3\).
+
+\subsubsection{Answer 6}
+\label{sec:orgheadline9}
+First, I will establish that the identity holds:
+\begin{align*}
+  \frac{(1 - x^2)^n}{(1 - x)^n} &= (1 - x^2)^n (1 + x + x^2 + x^3 + \hdots)^n \\
+                               &= (1 - x + (1 - 1)x^3 + (1 - 1)x^4 + \hdots)^n \\
+                               &= (1 + x)^n\;.
+\end{align*}
+
+Now, from binomial theorem:
+\begin{align*}
+  (1 + x)^n = \sum_{i=0}^\infty {n \choose i} x^i\;.
+\end{align*}
+
+Thus the coefficient of \(x^{2m} = {n \choose m}\).
+\end{document}
